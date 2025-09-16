@@ -28,22 +28,29 @@ class ListaScreen extends StatefulWidget {
 class ListaScreenState extends State<ListaScreen> {
 
   List<Tarefa> tarefas = [];
+  TextEditingController controller = new TextEditingController();
 
   void adicionaTarefa(String nome) {
     setState(() {
     tarefas.add(Tarefa(nome: nome));
   });
+
+  controller.clear();
 }
 
   Widget getItem(Tarefa tarefa) {
 
-    return new Row(
+    return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: new Icon(Icons.check_box, size: 42.0, color: Colors.green,),
+                  icon: Icon(tarefa.concluida ? Icons.check_box : Icons.check_box_outline_blank, size: 42.0, color: Colors.green,),
                   padding: EdgeInsets.only(left: 10.0, right: 30.0),
-                  onPressed: () { },
+                  onPressed: () {
+                    setState(() {
+                      tarefa.concluida = true;
+                    });
+                   },
                   ),
                   new Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +76,8 @@ class ListaScreenState extends State<ListaScreen> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: TextField(
-                onSubmitted: (value) {
+                controller: controller,
+                onSubmitted: (value) { // poderia fazer somente com  onSubmitted: adicionaTarefa,
                   adicionaTarefa(value);
                 },
               ),
