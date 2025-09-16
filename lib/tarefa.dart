@@ -6,11 +6,9 @@ class Tarefa {
     bool concluida;
 
     //construtor
-    Tarefa(String nome){
-        this.nome = nome;
-        this.data = DateTime.now();
-        this.concluida = false;
-    };
+    Tarefa({required this.nome})
+      : data = DateTime.now(),
+        concluida = false;
 }
 
 
