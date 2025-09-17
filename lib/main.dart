@@ -53,12 +53,28 @@ class ListaScreenState extends State<ListaScreen> {
             color: Colors.green,
           ),
           padding: EdgeInsets.only(left: 10.0, right: 8.0),
-                  onPressed: () {
-                    setState(() {
-                      tarefa.concluida = true;
-                      _salvaTarefas();
-                    });
-                  },
+          onPressed: () {
+            setState(() {
+              tarefa.concluida = !tarefa.concluida;
+              // if marked concluded, clear naoConcluida
+              if (tarefa.concluida) tarefa.naoConcluida = false;
+              _salvaTarefas();
+            });
+          },
+        ),
+        // Red X button for 'não conseguiu / não fez'
+        IconButton(
+          icon: tarefa.naoConcluida
+              ? Icon(Icons.clear, color: Colors.red, size: 28.0)
+              : Icon(Icons.clear_outlined, color: Colors.redAccent, size: 28.0),
+          onPressed: () {
+            setState(() {
+              tarefa.naoConcluida = !tarefa.naoConcluida;
+              // if marked naoConcluida, clear concluida
+              if (tarefa.naoConcluida) tarefa.concluida = false;
+              _salvaTarefas();
+            });
+          },
         ),
         Expanded(
           child: Column(

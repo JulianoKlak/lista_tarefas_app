@@ -6,11 +6,13 @@ class Tarefa {
   String nome;
   DateTime data;
   bool concluida;
+  bool naoConcluida;
 
   // construtor
   Tarefa({required this.nome})
       : data = DateTime.now(),
-        concluida = false;
+        concluida = false,
+        naoConcluida = false;
 
   // serialização simples para persistência
   Map<String, dynamic> toJson() {
@@ -18,6 +20,7 @@ class Tarefa {
       'nome': nome,
       'data': data.toIso8601String(),
       'concluida': concluida,
+      'naoConcluida': naoConcluida,
     };
   }
 
@@ -29,6 +32,7 @@ class Tarefa {
       t.data = DateTime.now();
     }
     t.concluida = map['concluida'] == true;
+    t.naoConcluida = map['naoConcluida'] == true;
     return t;
   }
 
