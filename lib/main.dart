@@ -54,12 +54,14 @@ class ListaScreenState extends State<ListaScreen> {
           ),
           padding: EdgeInsets.only(left: 10.0, right: 8.0),
           onPressed: () {
-            setState(() {
-              tarefa.concluida = !tarefa.concluida;
-              // if marked concluded, clear naoConcluida
-              if (tarefa.concluida) tarefa.naoConcluida = false;
-              _salvaTarefas();
-            });
+            // Only allow marking as complete, not unmarking
+            if (!tarefa.concluida) {
+              setState(() {
+                tarefa.concluida = true;
+                tarefa.naoConcluida = false;
+                _salvaTarefas();
+              });
+            }
           },
         ),
         // Red X button for 'não conseguiu / não fez'
@@ -67,13 +69,41 @@ class ListaScreenState extends State<ListaScreen> {
           icon: tarefa.naoConcluida
               ? Icon(Icons.clear, color: Colors.red, size: 28.0)
               : Icon(Icons.clear_outlined, color: Colors.redAccent, size: 28.0),
-          onPressed: () {
-            setState(() {
-              tarefa.naoConcluida = !tarefa.naoConcluida;
-              // if marked naoConcluida, clear concluida
-              if (tarefa.naoConcluida) tarefa.concluida = false;
-              _salvaTarefas();
-            });
+          onPressed: () async {
+            // If task is marked as complete, show confirmation dialog
+            if (tarefa.concluida) {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text('Confirmar'),
+                  content: Text('Você realmente não concluiu essa tarefa?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: Text('Não concluí', style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                setState(() {
+                  tarefa.concluida = false;
+                  tarefa.naoConcluida = true;
+                  _salvaTarefas();
+                });
+              }
+            } else {
+              setState(() {
+                tarefa.naoConcluida = !tarefa.naoConcluida;
+                if (tarefa.naoConcluida) tarefa.concluida = false;
+                _salvaTarefas();
+              });
+            }
           },
         ),
         Expanded(
